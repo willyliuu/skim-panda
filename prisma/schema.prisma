@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model VideoMetadata {
+  id        String    @id @default(cuid())
+  youtubeId String    @unique
+  url       String
+  title     String
+  duration  String
+  thumbnail String
+  channel   String?
+  summaries Summary[]
+  createdAt DateTime  @default(now())
+}
+
+model Summary {
+  id         String         @id @default(cuid())
+  videoId    String
+  video      VideoMetadata  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  status     String         @default("pending") // pending, extracting, transcribing, summarizing, completed, failed
+  transcript Transcript?
+  result     SummaryResult?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+model Transcript {
+  id        String   @id @default(cuid())
+  summaryId String   @unique
+  summary   Summary  @relation(fields: [summaryId], references: [id], onDelete: Cascade)
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model SummaryResult {
+  id           String             @id @default(cuid())
+  summaryId    String             @unique
+  summary      Summary            @relation(fields: [summaryId], references: [id], onDelete: Cascade)
+  quickSummary String
+  takeaways    String             // JSON stringified array of strings
+  sections     SectionBreakdown[]
+  createdAt    DateTime           @default(now())
+}
+
+model SectionBreakdown {
+  id              String        @id @default(cuid())
+  summaryResultId String
+  summaryResult   SummaryResult @relation(fields: [summaryResultId], references: [id], onDelete: Cascade)
+  time            String
+  title           String
+  content         String
+}
