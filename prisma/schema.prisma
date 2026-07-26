@@ -44,6 +44,7 @@ model SummaryResult {
   quickSummary String
   takeaways    String             // JSON stringified array of strings
   sections     SectionBreakdown[]
+  language     String             @default("en")
   createdAt    DateTime           @default(now())
 }
 

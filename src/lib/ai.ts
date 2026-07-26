@@ -48,8 +48,12 @@ export interface SummaryData {
   sections: { time: string; title: string; content: string }[];
 }
 
-export async function summarizeTranscript(transcript: string): Promise<SummaryData> {
-  const prompt = `You are a highly capable AI assistant that summarizes video transcripts to help people learn and review faster.
+export async function summarizeTranscript(transcript: string, language: string = "en"): Promise<SummaryData> {
+  const languageInstruction = language === "id" 
+    ? "\nCRITICAL: Output the entire JSON content (quickSummary, takeaways, section titles, and section contents) in Indonesian." 
+    : "";
+
+  const prompt = `You are a highly capable AI assistant that summarizes video transcripts to help people learn and review faster.${languageInstruction}
 I will provide you with a timestamped transcript. 
 Extract the most valuable information and structure it into three parts:
 1. quickSummary: A 2-3 sentence overview of the video's core message.

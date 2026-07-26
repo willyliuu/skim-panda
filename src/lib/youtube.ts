@@ -11,12 +11,12 @@ export async function getVideoMetadata(url: string) {
     const output = await youtubedl(url, {
       dumpSingleJson: true,
       noWarnings: true,
-      noCallHome: true,
-      noCheckCertificate: true,
+      callHome: false,
+      noCheckCertificates: true,
       preferFreeFormats: true,
       youtubeSkipDashManifest: true,
     });
-    
+
     return {
       id: output.id,
       title: output.title,
@@ -40,7 +40,7 @@ export async function extractAudio(url: string, id: string): Promise<string> {
   const tmpDir = os.tmpdir();
   const rawPath = path.join(tmpDir, `${id}_raw.m4a`);
   const outputPath = path.join(tmpDir, `${id}.m4a`);
-  
+
   if (fs.existsSync(rawPath)) fs.unlinkSync(rawPath);
   if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
 
@@ -50,16 +50,16 @@ export async function extractAudio(url: string, id: string): Promise<string> {
       audioFormat: "m4a",
       output: rawPath,
       noWarnings: true,
-      noCallHome: true,
-      noCheckCertificate: true,
+      callHome: false,
+      noCheckCertificates: true,
     });
-    
+
     // Manually compress to guarantee tiny file size for Groq
     await execAsync(`ffmpeg -i "${rawPath}" -ar 16000 -ac 1 -b:a 16k "${outputPath}" -y`);
-    
+
     // Cleanup raw
     if (fs.existsSync(rawPath)) fs.unlinkSync(rawPath);
-    
+
     return outputPath;
   } catch (error) {
     console.error("Error extracting audio:", error);
