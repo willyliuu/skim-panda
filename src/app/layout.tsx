@@ -40,7 +40,17 @@ export default async function RootLayout({
       lang="en"
       className={`${plusJakartaSans.variable} ${inter.variable} ${jetbrainsMono.variable} dark antialiased`}
     >
-      <body className="min-h-screen flex flex-col font-sans">
+      <body className="min-h-screen flex flex-col font-sans relative">
+        {/* Premium Ambient Background Elements */}
+        <div className="pointer-events-none fixed top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[100px] mix-blend-screen z-[-10]" />
+        <div className="pointer-events-none fixed bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-secondary/10 blur-[100px] mix-blend-screen z-[-10]" />
+        
+        {/* Subtle Tech Dot Grid */}
+        <div 
+          className="pointer-events-none fixed inset-0 opacity-[0.07] z-[-10]" 
+          style={{ backgroundImage: 'radial-gradient(circle, var(--foreground) 1px, transparent 1px)', backgroundSize: '32px 32px' }} 
+        />
+        
         <Providers>
           <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">

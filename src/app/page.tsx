@@ -109,7 +109,7 @@ export default function Home() {
   return (
     <div className="flex-1 flex flex-col items-center justify-start w-full">
       {/* Hero Section */}
-      <section className="w-full max-w-4xl flex flex-col items-center text-center space-y-8 px-4 py-20 mt-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <section className="w-full max-w-4xl flex flex-col justify-center items-center text-center space-y-8 px-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 min-h-[calc(100dvh-6rem)]">
         <div className="relative">
           {/* Mock Mascot */}
           <div className="text-8xl mb-4 animate-bounce">🐼</div>
@@ -204,7 +204,7 @@ export default function Home() {
 
       {/* Recent Summaries (Logged in users only) */}
       {session && recentSummaries.length > 0 && (
-        <section className="w-full max-w-5xl py-24 px-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both">
+        <section className="w-full max-w-5xl flex flex-col justify-center px-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both min-h-[80dvh]">
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-heading text-2xl font-bold">Your Recent Summaries</h2>
             <Link href="/history" className="text-primary hover:text-primary/80 flex items-center gap-1 font-medium transition-colors">
@@ -253,7 +253,7 @@ export default function Home() {
       )}
 
       {/* How It Works Section */}
-      <section className="w-full max-w-5xl py-24 px-4 border-t border-border/50 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200 fill-mode-both">
+      <section className="w-full max-w-5xl flex flex-col justify-center px-4 border-t border-border/50 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200 fill-mode-both min-h-screen">
         <div className="text-center mb-16">
           <h2 className="font-heading text-3xl font-bold mb-4">How SkimPanda Works</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">From a long video to actionable insights in three simple steps.</p>
@@ -290,7 +290,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="w-full max-w-6xl mx-auto py-24 px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 fill-mode-both">
+      <section id="features" className="w-full max-w-6xl mx-auto flex flex-col justify-center px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 fill-mode-both min-h-screen">
         <div className="text-center mb-16 space-y-4">
           <h2 className="font-heading text-3xl md:text-5xl font-bold">Why use SkimPanda?</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
