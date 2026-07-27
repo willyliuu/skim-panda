@@ -7,6 +7,7 @@ import { Copy, Download, CheckCircle2, Search, Link as LinkIcon, PlayCircle } fr
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 export default function SummaryResultsPage() {
   const params = useParams();
@@ -76,9 +77,19 @@ export default function SummaryResultsPage() {
       {/* Video Header */}
       <div className="flex flex-col md:flex-row gap-6 mb-8 items-start">
         <div className="w-full md:w-1/3 aspect-video bg-muted rounded-xl flex items-center justify-center text-4xl overflow-hidden relative shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-surface flex items-center justify-center text-6xl">
-            🐼
-          </div>
+          {video.thumbnail ? (
+            <Image 
+              src={video.thumbnail} 
+              alt={video.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-surface flex items-center justify-center text-6xl">
+              🐼
+            </div>
+          )}
         </div>
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-2">

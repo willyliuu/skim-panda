@@ -6,12 +6,14 @@ import { Search, Clock, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface SummaryData {
   id: string;
   video: {
     title: string;
     duration: string;
+    thumbnail?: string;
   };
   createdAt: string;
 }
@@ -80,10 +82,20 @@ export default function HistoryPage() {
           {filteredSummaries.map((summary) => (
             <Link key={summary.id} href={`/summary/${summary.id}`}>
               <Card className="h-full bg-surface hover:-translate-y-1 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 group overflow-hidden cursor-pointer flex flex-col">
-                <div className="h-40 bg-muted relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-surface flex items-center justify-center text-5xl">
-                    🐼
-                  </div>
+                <div className="h-40 bg-muted relative overflow-hidden flex items-center justify-center">
+                  {summary.video?.thumbnail ? (
+                    <Image 
+                      src={summary.video.thumbnail} 
+                      alt={summary.video.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-surface flex items-center justify-center text-5xl">
+                      🐼
+                    </div>
+                  )}
                   <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-mono px-2 py-1 rounded">
                     {summary.video?.duration || "0:00"}
                   </div>

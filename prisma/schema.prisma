@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma/client"
 }
 
 datasource db {
@@ -18,8 +19,19 @@ model VideoMetadata {
   createdAt DateTime  @default(now())
 }
 
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  name      String?
+  summaries Summary[]
+  createdAt DateTime  @default(now())
+}
+
 model Summary {
   id         String         @id @default(cuid())
+  userId     String?
+  user       User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   videoId    String
   video      VideoMetadata  @relation(fields: [videoId], references: [id], onDelete: Cascade)
   status     String         @default("pending") // pending, extracting, transcribing, summarizing, completed, failed

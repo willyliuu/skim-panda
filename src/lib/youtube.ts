@@ -18,10 +18,10 @@ export async function getVideoMetadata(url: string) {
     });
 
     return {
-      id: output.id,
-      title: output.title,
+      id: output.id || "",
+      title: output.title || "Unknown Title",
       duration: output.duration_string || `${Math.floor(output.duration / 60)}:${(output.duration % 60).toString().padStart(2, '0')}`,
-      thumbnail: output.thumbnail,
+      thumbnail: output.thumbnail || "",
       channel: output.uploader,
       url: url
     };

@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getVideoMetadata, extractAudio } from "@/lib/youtube";
 import { transcribeAudio, summarizeTranscript } from "@/lib/ai";
 import fs from "fs";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const maxDuration = 300; // Allow up to 5 minutes on Vercel Hobby/Pro if configured
 
@@ -14,6 +16,9 @@ export async function POST(request: NextRequest) {
     if (!url) {
       return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
     }
+
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id || null;
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -47,6 +52,7 @@ export async function POST(request: NextRequest) {
           const summary = await prisma.summary.create({
             data: {
               videoId: video.id,
+              userId: userId,
               status: "extracting",
             },
           });
