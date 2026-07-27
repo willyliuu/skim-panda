@@ -39,6 +39,56 @@ export default function SummaryResultsPage() {
     }
   };
 
+  const downloadTextFile = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadSummary = () => {
+    if (!summary || !summary.result) return;
+    const { video, result } = summary;
+    
+    let takeawaysText = "";
+    try {
+      const takeaways = JSON.parse(result.takeaways);
+      takeawaysText = takeaways.map((t: string) => `- ${t}`).join('\n');
+    } catch (e) {}
+
+    let sectionsText = "";
+    if (result.sections) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sectionsText = result.sections.map((s: any) => `[${s.time}] ${s.title}\n${s.content}`).join('\n\n');
+    }
+
+    const content = `Title: ${video.title}
+URL: ${video.url}
+Duration: ${video.duration}
+
+=== QUICK SUMMARY ===
+${result.quickSummary}
+
+=== KEY TAKEAWAYS ===
+${takeawaysText}
+
+=== SECTION BREAKDOWN ===
+${sectionsText}
+`;
+    downloadTextFile(content, `${video.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_summary.txt`);
+  };
+
+  const handleDownloadTranscript = () => {
+    if (!summary || !summary.transcript) return;
+    const { video, transcript } = summary;
+    downloadTextFile(transcript.text, `${video.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_transcript.txt`);
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -101,10 +151,14 @@ export default function SummaryResultsPage() {
             <PlayCircle className="h-4 w-4" />
             <span>{video.channel || "Unknown Channel"}</span>
           </div>
-          <div className="flex gap-2 pt-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             <Button variant="secondary" onClick={handleCopy} className="gap-2 shadow-sm hover:shadow-md">
               {copied ? <CheckCircle2 className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
               {copied ? "Copied!" : "Copy Summary"}
+            </Button>
+            <Button variant="outline" onClick={handleDownloadSummary} className="gap-2 border-border hover:bg-surface-elevated">
+              <Download className="h-4 w-4" />
+              Download Summary
             </Button>
             <Link href={video.url} target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="gap-2 border-border hover:bg-surface-elevated">
@@ -191,17 +245,23 @@ export default function SummaryResultsPage() {
 
         <TabsContent value="transcript" className="animate-in fade-in-50 duration-500">
           <Card className="border-border/50">
-            <CardHeader className="flex flex-row flex-wrap gap-4 items-center justify-between border-b border-border/50 pb-4">
+            <CardHeader className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-border/50 pb-4">
               <CardTitle className="font-heading text-xl">Transcript</CardTitle>
-              <div className="relative w-full max-w-xs">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input 
-                  type="text" 
-                  placeholder="Search transcript..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-muted border-none rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                />
+              <div className="flex w-full md:w-auto items-center gap-2">
+                <div className="relative flex-1 md:w-64">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input 
+                    type="text" 
+                    placeholder="Search transcript..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-muted border-none rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+                <Button variant="outline" size="sm" onClick={handleDownloadTranscript} className="gap-2 h-9">
+                  <Download className="h-4 w-4" />
+                  <span className="hidden sm:inline">Download</span>
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="p-0">

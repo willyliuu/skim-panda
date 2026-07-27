@@ -109,7 +109,7 @@ export default function Home() {
   return (
     <div className="flex-1 flex flex-col items-center justify-start w-full">
       {/* Hero Section */}
-      <section className="w-full max-w-4xl flex flex-col items-center text-center space-y-8 px-4 py-20 mt-8">
+      <section className="w-full max-w-4xl flex flex-col items-center text-center space-y-8 px-4 py-20 mt-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <div className="relative">
           {/* Mock Mascot */}
           <div className="text-8xl mb-4 animate-bounce">🐼</div>
@@ -202,11 +202,11 @@ export default function Home() {
         )}
       </section>
 
-      {/* Recent Summaries Section */}
-      {recentSummaries.length > 0 && (
-        <section className="w-full max-w-5xl px-4 py-12">
+      {/* Recent Summaries (Logged in users only) */}
+      {session && recentSummaries.length > 0 && (
+        <section className="w-full max-w-5xl py-24 px-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-heading text-2xl font-bold">Recent Summaries</h2>
+            <h2 className="font-heading text-2xl font-bold">Your Recent Summaries</h2>
             <Link href="/history" className="text-primary hover:text-primary/80 flex items-center gap-1 font-medium transition-colors">
               View All History <ArrowRight className="h-4 w-4" />
             </Link>
@@ -253,14 +253,11 @@ export default function Home() {
       )}
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="w-full bg-card/50 py-24 px-4 border-y border-border/40">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="font-heading text-3xl md:text-5xl font-bold">How It Works</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Get the essence of any long video in three simple steps.
-            </p>
-          </div>
+      <section className="w-full max-w-5xl py-24 px-4 border-t border-border/50 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200 fill-mode-both">
+        <div className="text-center mb-16">
+          <h2 className="font-heading text-3xl font-bold mb-4">How SkimPanda Works</h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">From a long video to actionable insights in three simple steps.</p>
+        </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
             {/* Step 1 */}
@@ -290,11 +287,10 @@ export default function Home() {
               <p className="text-muted-foreground">Get a quick summary, key takeaways, and a structured breakdown instantly.</p>
             </div>
           </div>
-        </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="w-full max-w-6xl mx-auto py-24 px-4">
+      <section id="features" className="w-full max-w-6xl mx-auto py-24 px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 fill-mode-both">
         <div className="text-center mb-16 space-y-4">
           <h2 className="font-heading text-3xl md:text-5xl font-bold">Why use SkimPanda?</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
