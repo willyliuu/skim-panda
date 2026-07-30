@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getVideoMetadata, extractAudio } from "@/lib/youtube";
+import { getVideoMetadata, extractAudio, fetchDirectTranscript } from "@/lib/youtube";
 import { transcribeAudio, summarizeTranscript } from "@/lib/ai";
 import fs from "fs";
 import { getServerSession } from "next-auth/next";
@@ -58,17 +58,27 @@ export async function POST(request: NextRequest) {
           });
 
           sendEvent({ status: "extracting" });
-          console.log("Extracting audio...");
-          const audioPath = await extractAudio(url, metadata.id);
+          console.log("Fetching transcript...");
+          let transcriptText = await fetchDirectTranscript(metadata.id || url);
+          let audioPath: string | null = null;
 
-          await prisma.summary.update({
-            where: { id: summary.id },
-            data: { status: "transcribing" },
-          });
+          if (!transcriptText) {
+            console.log("Direct transcript unavailable. Extracting audio...");
+            audioPath = await extractAudio(url, metadata.id);
 
-          sendEvent({ status: "transcribing" });
-          console.log("Transcribing audio...");
-          const transcriptText = await transcribeAudio(audioPath);
+            await prisma.summary.update({
+              where: { id: summary.id },
+              data: { status: "transcribing" },
+            });
+
+            sendEvent({ status: "transcribing" });
+            console.log("Transcribing audio...");
+            transcriptText = await transcribeAudio(audioPath);
+          }
+
+          if (!transcriptText) {
+            throw new Error("Could not retrieve transcript for this video");
+          }
 
           await prisma.transcript.create({
             data: {
@@ -107,7 +117,7 @@ export async function POST(request: NextRequest) {
             data: { status: "completed" },
           });
 
-          if (fs.existsSync(audioPath)) {
+          if (audioPath && fs.existsSync(audioPath)) {
             fs.unlinkSync(audioPath);
           }
 
